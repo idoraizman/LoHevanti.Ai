@@ -3,5 +3,7 @@
   "name": "LoHevanti.Ai",
   "version": "1.0",
   "description": "deadpool wolvering",
-
+  "action": {
+    "default_icon": "images/logo1.png"
+  }
 }
