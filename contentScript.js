@@ -1,9 +1,4 @@
-document.addEventListener('keydown', function(event) {
-    console.log('A key was pressed');
-    if (event.ctrlKey) {
-        console.log('Ctrl key pressed');
-    }
-});
+console.log('Content Script Started Running');
 
 document.addEventListener('contextmenu', function(event) {
     if (event.ctrlKey && event.button === 2) {

@@ -1,3 +1,5 @@
+console.log('Background Script Started Running');
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "open_popup") {
         // Log the popup opening event
