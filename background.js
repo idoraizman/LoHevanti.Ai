@@ -9,6 +9,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.windows.create({
             url: "popup.html",
             type: "popup",
+            left: request.coordinates.x,
+            top: request.coordinates.y,
             width: 400,
             height: 300
         });
