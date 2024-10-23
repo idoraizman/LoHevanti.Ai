@@ -22,8 +22,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             type: "popup",
             left: request.coordinates.x,
             top: request.coordinates.y,
-            width: 400,
-            height: 300
+            width: 400,  // Adjust width to match the content and styles
+            height: 300, // Adjust height based on the expected menu size
+            focused: true
         }, function(newWindow) {
             popupWindowId = newWindow.id;
         });
@@ -31,14 +32,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Log that the popup window was opened
         console.log('Popup window opened');
     }
+    // resize popup
+    else if (request.action === "resize_popup" && popupWindowId !== null) {
+        // Dynamically resize the popup window
+        chrome.windows.update(popupWindowId, {
+            width: request.width + 20,  // Adding some extra padding for scrollbar, etc.
+            height: request.height + 20 // Adding some extra padding for scrollbar, etc.
+        });
+    }
     // select text
-    if (request.action === "selected_text" && request.text) {
+    else if (request.action === "selected_text" && request.text) {
         console.log('updated latest selected text to hold "' + latestSelectedText + '"');
         // Store the latest selected text
         latestSelectedText = request.text;
     }
     // send selected text to popup
-    if (request.action === "get_selected_text") {
+    else if (request.action === "get_selected_text") {
         console.log('sends selected text to popup. selected text is: "' + latestSelectedText + '"');
         sendResponse({ text: latestSelectedText });
     }
