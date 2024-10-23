@@ -7,3 +7,9 @@ chrome.runtime.sendMessage({ action: "get_selected_text" }, function(response) {
         document.getElementById('highlighted-text').innerText = response.text;
     }
 });
+
+// Close the popup window if a click is detected outside
+document.addEventListener('click', function(event) {
+    // This prevents clicks inside the popup from triggering the close action
+    event.stopPropagation();
+});

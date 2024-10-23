@@ -1,12 +1,20 @@
 console.log('Background Script Started Running');
-
+// saves the currently highlighted text
 let latestSelectedText = "";
+// saves the current popup window to make sure there exists at most 1 page at a time
+let popupWindowId = null;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // open popup
-    if (request.action === "open_popup") {
+    if (request.action === "open_popup" && request.coordinates) {
         // Log the popup opening event
         console.log('Received request to open popup');
+
+        // Close any previously opened popup window
+        if (popupWindowId !== null) {
+            console.log('Remove old popup');
+            chrome.windows.remove(popupWindowId);
+        }
 
         // Open the popup window
         chrome.windows.create({
@@ -16,6 +24,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             top: request.coordinates.y,
             width: 400,
             height: 300
+        }, function(newWindow) {
+            popupWindowId = newWindow.id;
         });
 
         // Log that the popup window was opened
@@ -31,5 +41,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "get_selected_text") {
         console.log('sends selected text to popup. selected text is: "' + latestSelectedText + '"');
         sendResponse({ text: latestSelectedText });
+    }
+});
+
+// close popup window when clicked outside of it
+chrome.windows.onFocusChanged.addListener(function(windowId) {
+    if (popupWindowId && windowId !== popupWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
+        console.log('Close existing popup');
+        chrome.windows.remove(popupWindowId);
+        popupWindowId = null;
     }
 });
