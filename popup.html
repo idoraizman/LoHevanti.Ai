@@ -8,32 +8,55 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            text-align: center; /* Centers the text in the body */
+            position: relative;
+            height: 100vh; /* Makes the body fill the full viewport height */
+            background: linear-gradient(135deg, #f0f8ff, #e6e6fa); /* Light gradient background */
         }
 
         .context-menu {
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            list-style-type: none;
-            padding: 0;
-            width: 400px;        /* Define a specific width */
-            height: 200px;   /* Set maximum height */
-            overflow-y: auto;    /* Enable vertical scrolling */
+            background: linear-gradient(135deg, #ADD8E6, #87CEFA); /* Gradient for popup background */
+            border: 1px solid #b0c4de; /* Light blue border for subtle separation */
+            border-radius: 12px; /* Softly rounded corners for a modern look */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+            list-style-type: none; /* Removes bullet points */
+            padding: 10px 0; /* Vertical padding for breathing space inside */
+            width: 360px; /* Fixed width to maintain a compact look */
+            max-height: 220px; /* Limits height and enables scrolling if overflow */
+            overflow-y: auto; /* Adds vertical scroll for overflow */
+            text-align: center;  /* Centers the text inside each item */
+            position: absolute; /* Absolute positioning to center in viewport */
+            top: 50%; /* Centers vertically */
+            left: 50%; /* Centers horizontally */
+            transform: translate(-50%, -50%); /* Offsets to center precisely */
+            color: #333; /* Text color for better readability */
         }
 
         .context-menu-item {
-            padding: 8px 12px;
-            cursor: pointer;
+            padding: 14px 0; /* Vertical padding to space items out */
+            cursor: pointer; /* Pointer cursor for interactive feel */
+            transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
+            color: #333; /* Text color for context menu items */
+            font-weight: 500; /* Slightly bolder text for visibility */
+            font-size: 16px; /* Font size for readability */
         }
 
         .context-menu-item:hover {
-            background-color: #f0f0f0;
+            background-color: #f0faff; /* Light blue hover background */
+            color: #0056b3; /* Darker blue text on hover for contrast */
+            font-weight: bold; /* Slightly bolder on hover for emphasis */
         }
 
         .separator {
-            border-top: 1px solid #e0e0e0;
-            margin: 4px 0;
+            border-top: 1px solid #e0e0e0; /* Light gray line to separate items */
+            margin: 10px 0; /* Spacing around separator for clarity */
+        }
+
+        #highlighted-text {
+            font-weight: bold; /* Bold font to make the heading stand out */
+            color: #333; /* Text color for readability */
+            font-size: 20px; /* Larger font size for header prominence */
+            margin-top: 20px; /* Margin to separate from the top of the viewport */
         }
     </style>
 </head>
