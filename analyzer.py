@@ -22,7 +22,7 @@ def action1(text):
     f"translate the following text to hebrew: {text}, return only the hebrew text.")
     #print(propmt_message)
     response = client.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-4o-mini",
 
     messages=[
       {"role": "user",
