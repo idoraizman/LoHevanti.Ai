@@ -35,3 +35,6 @@ api_keys.json
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# ignore openAi key
+myKey.py
