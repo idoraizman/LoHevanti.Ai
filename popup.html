@@ -4,71 +4,264 @@
     <meta charset="UTF-8">
     <title>LoHevanti.Ai</title>
     <style>
-        body {
+        :root {
+            /* Updated modern color scheme */
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --bg-gradient: linear-gradient(135deg, #F8FAFC, #E2E8F0);
+            --menu-bg: rgba(255, 255, 255, 0.98);
+
+            /* New action-specific colors */
+            --translate-from: #22C55E;
+            --translate-to: #16A34A;
+            --rephrase-from: #8B5CF6;
+            --rephrase-to: #7C3AED;
+            --detail-from: #3B82F6;
+            --detail-to: #2563EB;
+            --lookup-from: #EC4899;
+            --lookup-to: #DB2777;
+
+            /* Text colors */
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            text-align: center; /* Centers the text in the body */
-            position: relative;
-            height: 100vh; /* Makes the body fill the full viewport height */
-            background: linear-gradient(135deg, #f0f8ff, #e6e6fa); /* Light gradient background */
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
         }
 
         .context-menu {
-            background: linear-gradient(135deg, #ADD8E6, #87CEFA); /* Gradient for popup background */
-            border: 1px solid #b0c4de; /* Light blue border for subtle separation */
-            border-radius: 12px; /* Softly rounded corners for a modern look */
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
-            list-style-type: none; /* Removes bullet points */
-            padding: 10px 0; /* Vertical padding for breathing space inside */
-            width: 360px; /* Fixed width to maintain a compact look */
-            max-height: 220px; /* Limits height and enables scrolling if overflow */
-            overflow-y: auto; /* Adds vertical scroll for overflow */
-            text-align: center;  /* Centers the text inside each item */
-            position: absolute; /* Absolute positioning to center in viewport */
-            top: 50%; /* Centers vertically */
-            left: 50%; /* Centers horizontally */
-            transform: translate(-50%, -50%); /* Offsets to center precisely */
-            color: #333; /* Text color for better readability */
+            background: var(--menu-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md),
+                       inset 0 1px 1px rgba(255, 255, 255, 0.8);
+            list-style-type: none;
+            padding: 8px;
+            width: 340px;
+            position: relative;
+            opacity: 0;
+            transform-origin: top center;
+            animation: menuOpen 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .context-menu.closing {
+            animation: menuClose 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .context-menu-item {
-            padding: 14px 0; /* Vertical padding to space items out */
-            cursor: pointer; /* Pointer cursor for interactive feel */
-            transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
-            color: #333; /* Text color for context menu items */
-            font-weight: 500; /* Slightly bolder text for visibility */
-            font-size: 16px; /* Font size for readability */
+            padding: 14px 18px;
+            margin: 4px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            background: transparent;
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Animate items sequentially */
+        .context-menu-item:nth-child(1) { animation: itemSlide 0.5s 0.1s forwards; }
+        .context-menu-item:nth-child(2) { animation: itemSlide 0.5s 0.2s forwards; }
+        .context-menu-item:nth-child(3) { animation: itemSlide 0.5s 0.3s forwards; }
+        .context-menu-item:nth-child(4) { animation: itemSlide 0.5s 0.4s forwards; }
+
+        .closing .context-menu-item {
+            animation: itemSlideOut 0.3s forwards !important;
+        }
+
+        .translate .icon-wrapper {
+            color: var(--translate-from);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .rephrase .icon-wrapper {
+            color: var(--rephrase-from);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .detail .icon-wrapper {
+            color: var(--detail-from);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .lookup .icon-wrapper {
+            color: var(--lookup-from);
+            border: 1px solid rgba(236, 72, 153, 0.2);
         }
 
         .context-menu-item:hover {
-            background-color: #f0faff; /* Light blue hover background */
-            color: #0056b3; /* Darker blue text on hover for contrast */
-            font-weight: bold; /* Slightly bolder on hover for emphasis */
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
         }
 
-        .separator {
-            border-top: 1px solid #e0e0e0; /* Light gray line to separate items */
-            margin: 10px 0; /* Spacing around separator for clarity */
+        .context-menu-item:hover .icon-wrapper {
+            transform: scale(1.1) rotate(8deg);
+            box-shadow: var(--shadow-md);
         }
+
+        .context-menu-item::after {
+            content: '→';
+            position: absolute;
+            right: 18px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .context-menu-item:hover::after {
+            opacity: 0.5;
+            transform: translateX(0);
+        }
+
 
         #highlighted-text {
-            font-weight: bold; /* Bold font to make the heading stand out */
-            color: #333; /* Text color for readability */
-            font-size: 20px; /* Larger font size for header prominence */
-            margin-top: 20px; /* Margin to separate from the top of the viewport */
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 18px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+        .context-menu-item:hover .shortcut {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+
+        /* Animations */
+        @keyframes menuOpen {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes menuClose {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+        }
+
+        @keyframes itemSlide {
+            0% {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes itemSlideOut {
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+        }
+
+        /* Added hover glow effects */
+        .context-menu-item:hover::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 14px;
+            padding: 1px;
+            background: linear-gradient(135deg,
+                var(--translate-from),
+                var(--translate-to)
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+        }
+
+        .rephrase:hover::before { background: linear-gradient(135deg, var(--rephrase-from), var(--rephrase-to)); }
+        .detail:hover::before { background: linear-gradient(135deg, var(--detail-from), var(--detail-to)); }
+        .lookup:hover::before { background: linear-gradient(135deg, var(--lookup-from), var(--lookup-to)); }
+
     </style>
 </head>
 <body>
-    <h2 id="highlighted-text">Highlighted Text</h2>
-     <ul class="context-menu" id="context-menu">
-        <li class="context-menu-item">Action 1</li>
-        <li class="context-menu-item">Action 2</li>
-        <li class="separator"></li>
-        <li class="context-menu-item">Action 3</li>
-     </ul>
-    <!-- Link the external script file instead of using inline scripts -->
+    <h2 id="highlighted-text"></h2>
+    <ul class="context-menu" id="context-menu">
+        <li class="context-menu-item translate">
+            <div class="icon-wrapper">🌐</div>
+            <span>Translate</span>
+        </li>
+        <li class="context-menu-item rephrase">
+            <div class="icon-wrapper">↺</div>
+            <span>Rephrase</span>
+        </li>
+        <li class="context-menu-item detail">
+            <div class="icon-wrapper">🔍</div>
+            <span>Detail More</span>
+        </li>
+        <li class="context-menu-item lookup">
+            <div class="icon-wrapper">📚</div>
+            <span>Look Up</span>
+        </li>
+    </ul>
+
     <script src="popup.js"></script>
 </body>
 </html>
