@@ -34,13 +34,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+// Function to send request to Flask server and display response in tooltip
+let currentTooltip = null;
+
 // Function to send request to Flask server
 async function sendRequest(endpoint, text) {
+    // Hide any currently visible tooltip
+    if (currentTooltip) {
+        currentTooltip.style.opacity = 0;
+        setTimeout(() => { currentTooltip.style.display = 'none'; }, 5);
+    }
+
+    // make tooltip visible again
+    const tooltip = document.getElementById(`tooltip-${endpoint}`);
+    tooltip.style.display = 'block';
+    tooltip.style.position = 'absolute';
+    tooltip.innerText = "Loading...";  // Show loading text
+
     const response = await fetch(`http://127.0.0.1:5000/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
     });
     const data = await response.json();
-    alert(data.result);  // Display result, update as needed
+
+    // Update the tooltip with the server's response
+    tooltip.innerText = data.result;
+    tooltip.style.opacity = 1;
+    currentTooltip = tooltip;  // Set this tooltip as the current one
 }

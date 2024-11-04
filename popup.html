@@ -49,6 +49,7 @@
             align-items: center;
             justify-content: center;
             color: var(--text-primary);
+            overflow: visible; /* Allow overflow */
         }
 
         .context-menu {
@@ -100,6 +101,25 @@
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             background: rgba(255, 255, 255, 0.9);
             box-shadow: var(--shadow-sm);
+        }
+
+            .tooltip {
+            display: none;
+            position: absolute; /* Positioned relative to the button */
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #374151;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .context-menu-item:hover .tooltip {
+            display: block;
         }
 
         /* Animate items sequentially */
@@ -247,20 +267,27 @@
         <li class="context-menu-item translate">
             <div class="icon-wrapper">🌐</div>
             <span>Translate</span>
+            <span class="tooltip" id="tooltip-translate">Loading...</span>
         </li>
         <li class="context-menu-item rephrase">
             <div class="icon-wrapper">↺</div>
             <span>Rephrase</span>
+            <span class="tooltip" id="tooltip-rephrase">Loading...</span>
         </li>
         <li class="context-menu-item detail">
             <div class="icon-wrapper">🔍</div>
             <span>Detail More</span>
+            <span class="tooltip" id="tooltip-detail">Loading...</span>
         </li>
         <li class="context-menu-item lookup">
             <div class="icon-wrapper">📚</div>
             <span>Look Up</span>
+            <span class="tooltip" id="tooltip-lookup">Loading...</span>
         </li>
     </ul>
+
+    <!-- Response box to display server responses -->
+    <div class="response-box" id="response-box"></div>
 
     <script src="popup.js"></script>
 </body>
